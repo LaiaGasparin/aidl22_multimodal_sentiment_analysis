@@ -22,11 +22,17 @@
         "epochs": 50,
         "lr": 1e-3,
         "hop_length": 512, 
-        "n_fft" : 2048, // window in num. of samples"
+        "n_fft" : 2048, 
         "sample_rate":48000,
         "number_mfcc" : 13,
         "n_mels": 100
     
+    },
+    "transformer_conf" : {
+        "nhead": 4,
+        "d_model": 512,
+        "num_layers": 2, 
+        "dim_feedforward": 2048  
     },
     "wandb":{
         "project_name" : "multimodal_sentiment_analysis",

@@ -1,0 +1,18 @@
+{
+    "os": "Linux-5.4.188+-x86_64-with-Ubuntu-18.04-bionic",
+    "python": "3.7.13",
+    "heartbeatAt": "2022-06-07T20:15:24.953808",
+    "startedAt": "2022-06-07T20:15:13.432905",
+    "docker": null,
+    "gpu": "Tesla T4",
+    "gpu_count": 1,
+    "cpu_count": 2,
+    "cuda": null,
+    "args": null,
+    "state": "running",
+    "program": "AIDL_Dataset+Dataloader+Transformer_070622.ipynb",
+    "colab": "https://colab.research.google.com/notebook#fileId=19-SjI9oMMcMe6YLnErXUhyYToc-iLSsJ",
+    "host": "4fcd3a39dbf1",
+    "username": "root",
+    "executable": "/usr/bin/python3"
+}

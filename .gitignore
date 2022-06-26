@@ -130,4 +130,4 @@ dmypy.json
 
 
 #dataset videos
-data/
+data/*.mp4

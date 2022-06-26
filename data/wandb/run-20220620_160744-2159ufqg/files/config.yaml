@@ -1,0 +1,65 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.12.18
+    framework: torch
+    is_jupyter_run: true
+    is_kaggle_kernel: false
+    python_version: 3.7.13
+    start_time: 1655741264
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 41
+      - 53
+      - 55
+      3:
+      - 2
+      - 16
+      4: 3.7.13
+      5: 0.12.18
+      8:
+      - 1
+      - 5
+batch_size:
+  desc: null
+  value: 32
+data_folder_id:
+  desc: null
+  value: 1Pq1tWAaCw4vV2nfyEaZ6imUgC6T_3KPn
+epochs:
+  desc: null
+  value: 3
+lr:
+  desc: null
+  value: 0.001
+max_epochs:
+  desc: null
+  value: 100
+num_classes:
+  desc: null
+  value: 8
+num_workers:
+  desc: null
+  value: 1
+ruta_AIDL_dataloader:
+  desc: null
+  value: /content/drive/MyDrive/Postgrau_AIDL
+shuffle:
+  desc: null
+  value: false
+train_folder_id:
+  desc: null
+  value: 1vNljFqCQ6ThPTQX5NVIdFFOKXjY4OBvh
+val_folder_id:
+  desc: null
+  value: 1B9RfjL5fTewdTEAdXBm893BU22ynQjOZ
