@@ -1,0 +1,31 @@
+{
+    "emotion": {
+        "01": "neutral",
+        "02": "calm",
+        "03": "happy",
+        "04": "sad",
+        "05": "angry",
+        "06": "fearful",
+        "07": "disgust",
+        "08": "surprised"
+    },
+    "FIG_SIZE": { "w" : 15, "h": 20 } ,
+    "params" : {
+        "train_folder_id" : "1vNljFqCQ6ThPTQX5NVIdFFOKXjY4OBvh",
+        "val_folder_id" : "1B9RfjL5fTewdTEAdXBm893BU22ynQjOZ",
+        "data_folder_id" : "1Pq1tWAaCw4vV2nfyEaZ6imUgC6T_3KPn",
+        "ruta_AIDL_dataloader" : "/content/drive/MyDrive/AIDL-Projecte/02-Codes&Tools/AIDL_dataloader",
+        "batch_size": 3,
+        "shuffle": true,
+        "num_workers": 2,
+        "max_epochs" : 100,
+        "epochs": 50,
+        "lr": 1e-3,
+        "hop_length": 512, 
+        "n_fft" : 2048, // window in num. of samples"
+        "sample_rate":48000,
+        "number_mfcc" : 13,
+        "n_mels": 100
+    
+    }
+}
