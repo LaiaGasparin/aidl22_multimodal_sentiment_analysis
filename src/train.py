@@ -5,15 +5,13 @@ import torch
 import torch.optim as optim
 from dataset_video import MyVideo
 from model import MyNet
-import wandb
-
-wandb.init(project=PROJECT_NAME, entity=ENTITY)
 
 import torchvision.transforms as transforms
 
 PROJECT_NAME = "multimodal_sentiment_analysis"
 ENTITY = "alexabos"
 
+wandb.init(project=PROJECT_NAME, entity=ENTITY)
 
 
 channel_out1 = 16
