@@ -5,6 +5,7 @@ import numpy as np
 import json
 from train import train_model
 
+
 with open("src/settings.json") as config_file:
     settings = json.load(config_file)
 
