@@ -2,6 +2,8 @@ import pandas as pd
 import os
 import random
 import sklearn
+from itertools import compress
+
 
 def generate_train_test_val_split(dir, train_size = 0.8, test_size = 0.2):
     os.chdir(dir)
@@ -18,10 +20,12 @@ def generate_train_test_val_split(dir, train_size = 0.8, test_size = 0.2):
         os.remove(data_dir + '/test.csv')
 
     files = os.listdir(os.path.abspath(data_dir))
+    files = list(compress(files, ['mp4' in i for i in files]))
+
     random.shuffle(files)
     # fer l'slice abans de les emocions x passar-li al stratify!!!!!! / incloure random_stat
-    train, test = sklearn.model_selection.train_test_split(files, train_size=train_size, test_size=test_size, random_state=42) # mantenir test constant 
-    train, val = sklearn.model_selection.train_test_split(train, train_size=train_size, test_size=test_size, random_state=42)
+    train, test = sklearn.model_selection.train_test_split(files, train_size=0.8, test_size=0.2, random_state=42, stratify = [z[6:8] for z in files])
+    train, val = sklearn.model_selection.train_test_split(train, train_size=0.8, test_size=0.2, random_state=42, stratify = [z[6:8] for z in train])
 
     # mapping with target 
     #add to settings.json

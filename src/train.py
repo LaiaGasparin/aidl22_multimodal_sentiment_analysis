@@ -23,19 +23,19 @@ kernel_size3 = 3
 pooling3 = 2
 fr, channels, height, weight = 142, 512, 104, 104
 
-def train_single_epoch(model, train_loader, optimizer, device, criterion):
+def train_single_epoch(model, train_loader, optimizer, device, criterion, useTrans):
   # Tell wandb to watch what the model gets up to: gradients, weights, and more
   wandb.watch(model, criterion, log="all", log_freq=10)
-
+  log_interval = 5
   model.train()
   
   accs, losses, ypred, yreal = [], [], [], []
-  
+
   for batch_idx, (vid, emo, mask) in enumerate(train_loader):
     optimizer.zero_grad()
     vid, emo, mask = vid.to(device), emo.to(device), mask.to(device)
     # print('running model ...')
-    emo_ = model(vid, mask)
+    emo_ = model(vid, useTrans, mask)
     # print('emo_ train: ', emo_.cpu().detach().numpy())
     # print('emo_ train type: ', type(emo_.cpu().detach().numpy()))
     # print('emo: train ', emo.cpu().detach().numpy())
@@ -43,13 +43,7 @@ def train_single_epoch(model, train_loader, optimizer, device, criterion):
     # print('criterion ...')
     # print('emo_ shape: ', emo_.shape)
     # print('emo shape: ', emo.shape)
-    
-    # confusion_matrix = torch.zeros(pred = pred, labels = labels, batch_ size = params["batch_size"], n_classes = 8)
-    # print('logging conf_mat')
-    wandb.log({"conf_mat" : wandb.plot.confusion_matrix(probs=emo_.cpu().detach().numpy(), 
-                                                        y_true=emo.cpu().detach().numpy(), 
-                                                        preds=None, class_names=["neutral", "calm", "happy", "sad", "angry", "fearful", "disgust", "surprised"])})
-    
+        
     loss = criterion(emo_, emo)
     
     # print('bcwrd pass ...')
@@ -59,15 +53,18 @@ def train_single_epoch(model, train_loader, optimizer, device, criterion):
     acc = accuracy(emo, emo_)
     losses.append(loss.item())
     accs.append(acc.item())
-    ypred.append(emo_.cpu().detach().numpy())
-    yreal.append(emo.cpu().detach().numpy())
+    ypred.extend(torch.argmax(emo_,-1).cpu().detach().numpy().tolist())
+    yreal.extend(emo.cpu().detach().numpy().tolist())
 
-    return np.mean(losses), np.mean(accs), ypred, yreal
+    if batch_idx % log_interval == 0:
+            wandb.log({"train inner loss": np.mean(losses), "train inner acc:": np.mean(accs)})
 
-def eval_single_epoch(model, val_loader, device, criterion):
+  return np.mean(losses), np.mean(accs), np.array(ypred), np.array(yreal)
+
+def eval_single_epoch(model, val_loader, device, criterion, useTrans):
+  model.eval()
   accs, losses, ypred, yreal = [], [], [], []
   with torch.no_grad():
-    model.eval()
     for batch_idx, (vid, emo, mask) in enumerate(val_loader):
         vid = vid.to(torch.float32)
         vid = vid.to(device)
@@ -79,7 +76,7 @@ def eval_single_epoch(model, val_loader, device, criterion):
         mask = torch.Tensor(mask).to(device)
         # vid, emo, mask = vid.to(device), torch.Tensor(emo).to(device), torch.Tensor(mask).to(device)
         # print('running model ...')
-        emo_ = model(vid, mask)
+        emo_ = model(vid, useTrans, mask)
         # print('emo_ val: ', emo_)
         # print('emo_ val type: ', type(emo_))
         # print('emo: val', emo)
@@ -89,16 +86,14 @@ def eval_single_epoch(model, val_loader, device, criterion):
         #print('emo_: ', emo_)
         # print('emo shape: ', emo.shape)
         #print('emo: ', emo)
-        wandb.log({"conf_mat2" : wandb.plot.confusion_matrix(probs=emo_.cpu().detach().numpy(), 
-                                                        y_true=emo.cpu().detach().numpy(), 
-                                                        preds=None, class_names=["neutral", "calm", "happy", "sad", "angry", "fearful", "disgust", "surprised"])})
         loss = criterion(emo_, emo)
         acc = accuracy(emo, emo_)
         losses.append(loss.item())
         accs.append(acc.item())
-        ypred.append(emo_.cpu().detach().numpy())
-        yreal.append(emo.cpu().detach().numpy())
-    return np.mean(losses), np.mean(accs), ypred, yreal
+        ypred.extend(torch.argmax(emo_,-1).cpu().detach().numpy().tolist())
+        yreal.extend(emo.cpu().detach().numpy().tolist())
+
+  return np.mean(losses), np.mean(accs), np.array(ypred), np.array(yreal)
 
 def train_model(params, trans_conf, device, criterion, video_path, csv_file_train, csv_file_val):
     # tell wandb to get started
@@ -107,7 +102,7 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
     config = wandb.config
 
     #print("Llegir classe\n")
-    train_transforms = transforms.Compose([transforms.CenterCrop(400), transforms.Resize(size = (100, 100))])
+    train_transforms = transforms.Compose([transforms.CenterCrop(400), transforms.Resize(size = (112, 112))])
     myVideo_train= MyVideo(video_path=video_path, csv_file=csv_file_train, transform=train_transforms)
     myVideo_val= MyVideo(video_path=video_path, csv_file=csv_file_val, transform=train_transforms)
     fr, channels, height, weight = myVideo_train[0][0].shape
@@ -119,10 +114,7 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
     
     #print("Crear model \n")  
     model = MyNet(num_classes=8, d_model=trans_conf['d_model'], nhead=trans_conf['nhead'],                
-                  channels = channels, height = height, weight = weight, 
-                  channel_out1 = 16, kernel_size1 = 3, pooling1 = 2,
-                  channel_out2 = 32, kernel_size2 = 3, pooling2 = 2,
-                  channel_out3 = 32, kernel_size3 = 3, pooling3 = 2, 
+                  useTrans=params['useTrans'],
                   dim_feedforward=trans_conf['dim_feedforward'],  
                   ).to(device)
 
@@ -130,11 +122,18 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.99)
     # print('LR: ', scheduler.get_last_lr()[0])
     for epoch in range(params["epochs"]):
-      loss, acc, ypred_train, yreal_train = train_single_epoch(model, train_loader, optimizer, device, criterion)
+      loss, acc, ypred_train, yreal_train = train_single_epoch(model, train_loader, optimizer, device, criterion, useTrans=params['useTrans'])
       wandb.log({"train epoch": epoch, "train loss": loss, "train acc:": acc, "current_lr:": scheduler.get_last_lr()[0]})
+      wandb.log({"conf_mat_train" : wandb.plot.confusion_matrix(preds=ypred_train,
+                                                            y_true=yreal_train,
+                                                            class_names=["neutral", "calm", "happy", "sad", "angry", "fearful", "disgust", "surprised"])})
       scheduler.step()
+
       print(f"Train Epoch {epoch} loss={loss:.2f} acc={acc:.2f} current_lr={scheduler.get_last_lr()[0]:.6f}")
-      loss, acc, ypred_test, yreal_test = eval_single_epoch(model, val_loader, device, criterion)
+      loss, acc, ypred_test, yreal_test = eval_single_epoch(model, val_loader, device, criterion, useTrans=params['useTrans'])
+      wandb.log({"conf_mat_test" : wandb.plot.confusion_matrix(preds=ypred_test,
+                                                            y_true=yreal_test,
+                                                            class_names=["neutral", "calm", "happy", "sad", "angry", "fearful", "disgust", "surprised"])})
       wandb.log({"Eval epoch": epoch, "Eval loss": loss, "Eval acc:": acc})
       print(f"Eval Epoch {epoch} loss={loss:.2f} acc={acc:.2f}")
   

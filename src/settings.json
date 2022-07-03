@@ -25,7 +25,8 @@
         "n_fft" : 2048, 
         "sample_rate":48000,
         "number_mfcc" : 13,
-        "n_mels": 100
+        "n_mels": 100,
+        "useTrans": true
     
     },
     "transformer_conf" : {

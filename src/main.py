@@ -4,7 +4,7 @@ import os
 import numpy as np
 import json
 from train import train_model
-
+from data_loading import generate_train_test_val_split
 
 with open("src/settings.json") as config_file:
     settings = json.load(config_file)
@@ -24,12 +24,8 @@ dir = "."
 video_path = os.path.join(dir, 'data')
 csv_file = os.path.join(dir, 'data/train.csv')
 
-#DATALOADER
-
-
-
-
-
+# Creation of csv files
+_, _, _ = generate_train_test_val_split(dir, train_size = 0.8, test_size = 0.2)
 
 csv_file_train = os.path.join(dir, 'data/train.csv')
 csv_file_val = os.path.join(dir, 'data/val.csv')

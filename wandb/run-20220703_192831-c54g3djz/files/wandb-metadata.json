@@ -1,0 +1,22 @@
+{
+    "os": "macOS-10.15.7-x86_64-i386-64bit",
+    "python": "3.8.13",
+    "heartbeatAt": "2022-07-03T17:28:32.515954",
+    "startedAt": "2022-07-03T17:28:31.427660",
+    "docker": null,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/alexandraabos/Documents/DL_Postgrau/aidl22_multimodal_sentiment_analysis/src/main.py",
+    "codePath": "src/main.py",
+    "git": {
+        "remote": "https://github.com/LaiaGasparin/aidl22_multimodal_sentiment_analysis.git",
+        "commit": "64ede8ab349f67fc606d15a683de4d9e93943ceb"
+    },
+    "email": "alexandraabos@gmail.com",
+    "root": "/Users/alexandraabos/Documents/DL_Postgrau/aidl22_multimodal_sentiment_analysis",
+    "host": "Alexandras-MacBook-Pro.local",
+    "username": "alexandraabos",
+    "executable": "/Users/alexandraabos/opt/anaconda3/envs/aidl-project-2/bin/python"
+}

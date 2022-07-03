@@ -1,5 +1,7 @@
 import torchvision.models as models
+import torch
 import torch.nn as nn
+import math
 
 class PositionalEncoding(nn.Module):
 
@@ -25,9 +27,7 @@ class PositionalEncoding(nn.Module):
 class MyNet(nn.Module):
     def __init__(self, device, num_classes, d_model, nhead,
                  channels, height, weight, 
-                 channel_out1, kernel_size1, pooling1,
-                 channel_out2, kernel_size2, pooling2,
-                 channel_out3, kernel_size3, pooling3,
+                 useTrans,
                  dim_feedforward=2048
                  ):
         super().__init__()
@@ -42,7 +42,7 @@ class MyNet(nn.Module):
         ct = 0
         for param in features_resnet18.parameters():
             ct += 1
-            if ct < 7:
+            if ct < 9:
               param.requires_grad = False
 
         self.features = features_resnet18
@@ -56,7 +56,7 @@ class MyNet(nn.Module):
         self.classifier = nn.Linear(d_model, num_classes)
         self.log_softmax = nn.LogSoftmax(-1)
 
-    def forward(self, x, src_key_padding_mask):
+    def forward(self, x, useTrans, src_key_padding_mask):
         #print('Començant fw model: ')
         x = x.to(torch.float32)
         #print("Shape x principi",x.shape)
@@ -72,15 +72,19 @@ class MyNet(nn.Module):
         x = x.view(bsz, frames, ch*w*h)
         #print("Shape abans Linear", x.shape)
         x = self.proj(x) # per convertir a la dimensio de l'embedding
-        #print("Shape després Linear", x.shape)
         
-        # print('Shape mask: ', src_key_padding_mask.shape)
-
-        x = x.transpose(1, 0) # el transformer espera les dimensions (T, B, C)
-        x = self.pe(x)
-        x = self.transformer(x, src_key_padding_mask=src_key_padding_mask)
-        # print('1: ', x.shape)
-        x = x.mean(0)
+        if(useTrans):
+            x = x.transpose(1, 0) # el transformer espera les dimensions (T, B, C)
+            x = self.pe(x)
+            x = self.transformer(x, src_key_padding_mask=src_key_padding_mask)
+            x = x.mean(0)
+        
+        if(useTrans == False):
+            #print('1: ', x.shape)
+            x = x.mean(1)
+            #bsz, w, h = x.shape
+            #x = x.view(bsz*w, h)
+            #print('2: ', x.shape)
         # print('2: ', x.shape)
         
         x = self.classifier(x)
