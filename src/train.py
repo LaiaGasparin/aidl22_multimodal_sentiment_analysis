@@ -7,6 +7,9 @@ from dataset_video import MyVideo
 from model import MyNet
 import torchvision.transforms as transforms
 
+PROJECT_NAME = "multimodal_sentiment_analysis"
+ENTITY = "alexabos"
+
 def train_single_epoch(model, train_loader, optimizer, device, criterion, useTrans):
     # Tell wandb to watch what the model gets up to: gradients, weights, and more
     # print('Starting to watch train')

@@ -7,31 +7,20 @@ from train import train_model
 from data_loading import generate_train_test_val_split
 
 
-# print('current directory1 :', os.getcwd())
-#os.chdir("../") # oriol
-# print('current directory2 :', os.getcwd())
+if __name__ == "__main__":
 
-# with open("src/settings.json") as config_file:
-#     settings = json.load(config_file)
-print('settings loaded1')
-print('settings loaded2')
-print('settings loaded3')
+    print('settings loaded1')
+    print('settings loaded2')
+    print('settings loaded3')
 
-# Fix seed to be able to reproduce experiments
-seed = 0
-np.random.seed(seed)
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-torch.cuda.manual_seed_all(seed)
+    # Fix seed to be able to reproduce experiments
+    seed = 0
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
-#todo: in settings.json
-
-
-
-# params = settings["params"]
-# trans_conf = settings["transformer_conf"]
-# emotion_mapping = settings['emotion_mapping']
-params = {
+    params = {
     "ruta_AIDL_dataloader" : "/content/drive/MyDrive/Postgrau_AIDL",
     'batch_size': 3,
     'shuffle': False,
@@ -41,30 +30,27 @@ params = {
     'num_classes': 8,
     'lr': 1e-3,
     'useTrans': True
-}
-trans_conf = {
-    'nhead': 2,
-    'd_model': 128, # fer mes petit -> 128/256/512
-    'num_layers': 2, #
-    'dim_feedforward': 512  # era 2048 31/05: jugar amb el learning rate + scheduler (scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.95)) --> mes petit!!!
-}
-emotion_mapping = {
-    "01": "neutral",
-    "02": "calm",
-    "03": "happy",
-    "04": "sad",
-    "05": "angry",
-    "06": "fearful",
-    "07": "disgust",
-    "08": "surprised"
-}
+    }
+    trans_conf = {
+        'nhead': 2,
+        'd_model': 128, # fer mes petit -> 128/256/512
+        'num_layers': 2, #
+        'dim_feedforward': 512  # era 2048 31/05: jugar amb el learning rate + scheduler (scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.95)) --> mes petit!!!
+    }
+    emotion_mapping = {
+        "01": "neutral",
+        "02": "calm",
+        "03": "happy",
+        "04": "sad",
+        "05": "angry",
+        "06": "fearful",
+        "07": "disgust",
+        "08": "surprised"
+    }
+    
+    PROJECT_NAME = "multimodal_sentiment_analysis"
+    ENTITY = "alexabos"
 
-PROJECT_NAME = "multimodal_sentiment_analysis"
-ENTITY = "alexabos"
-
-print('prova Oriol')
-
-if __name__ == "__main__":
     dir = os.getcwd()
     video_path = os.path.join(dir, 'data')
     csv_file = os.path.join(dir, 'data/train.csv')
