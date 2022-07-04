@@ -1,15 +1,15 @@
 import wandb
-from utils import accuracy
+from utils import accuracy, my_collate
 import numpy as np
 import torch
 import torch.optim as optim
 from dataset_video import MyVideo
-from model import MyNet
+from model_video import VideoNN
 
 import torchvision.transforms as transforms
 
-PROJECT_NAME = "multimodal_sentiment_analysis"
-ENTITY = "alexabos"
+PROJECT_NAME = "temp"
+ENTITY = "aidl"
 
 wandb.init(project=PROJECT_NAME, entity=ENTITY)
 
@@ -23,7 +23,7 @@ kernel_size3 = 3
 pooling3 = 2
 fr, channels, height, weight = 142, 512, 104, 104
 
-def train_single_epoch(model, train_loader, optimizer, device, criterion):
+def train_single_epoch_video(model, train_loader, optimizer, device, criterion):
   # Tell wandb to watch what the model gets up to: gradients, weights, and more
   wandb.watch(model, criterion, log="all", log_freq=10)
 
@@ -64,7 +64,7 @@ def train_single_epoch(model, train_loader, optimizer, device, criterion):
 
     return np.mean(losses), np.mean(accs), ypred, yreal
 
-def eval_single_epoch(model, val_loader, device, criterion):
+def eval_single_epoch_video(model, val_loader, device, criterion):
   accs, losses, ypred, yreal = [], [], [], []
   with torch.no_grad():
     model.eval()
@@ -100,7 +100,7 @@ def eval_single_epoch(model, val_loader, device, criterion):
         yreal.append(emo.cpu().detach().numpy())
     return np.mean(losses), np.mean(accs), ypred, yreal
 
-def train_model(params, trans_conf, device, criterion, video_path, csv_file_train, csv_file_val):
+def train_model_video(params, trans_conf, device, criterion, video_path, csv_file_train, csv_file_val, emotion_mapping):
     # tell wandb to get started
   with wandb.init(project=PROJECT_NAME, config=params, entity=ENTITY):
     # access all HPs through wandb.config, so logging matches execution!
@@ -108,8 +108,8 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
 
     #print("Llegir classe\n")
     train_transforms = transforms.Compose([transforms.CenterCrop(400), transforms.Resize(size = (100, 100))])
-    myVideo_train= MyVideo(video_path=video_path, csv_file=csv_file_train, transform=train_transforms)
-    myVideo_val= MyVideo(video_path=video_path, csv_file=csv_file_val, transform=train_transforms)
+    myVideo_train= MyVideo(video_path=video_path, csv_file=csv_file_train, emotion_mapping=emotion_mapping, transform=train_transforms)
+    myVideo_val= MyVideo(video_path=video_path, csv_file=csv_file_val, emotion_mapping=emotion_mapping, transform=train_transforms)
     fr, channels, height, weight = myVideo_train[0][0].shape
 
     #print("Variables video ",fr, channels, height, weight)
@@ -118,7 +118,7 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
     val_loader = torch.utils.data.DataLoader(myVideo_val, batch_size=params['batch_size'], shuffle=params['shuffle'], num_workers=params['num_workers'], collate_fn=my_collate)
     
     #print("Crear model \n")  
-    model = MyNet(num_classes=8, d_model=trans_conf['d_model'], nhead=trans_conf['nhead'],                
+    model = VideoNN(num_classes=8, d_model=trans_conf['d_model'], nhead=trans_conf['nhead'],                
                   channels = channels, height = height, weight = weight, 
                   channel_out1 = 16, kernel_size1 = 3, pooling1 = 2,
                   channel_out2 = 32, kernel_size2 = 3, pooling2 = 2,
@@ -130,11 +130,11 @@ def train_model(params, trans_conf, device, criterion, video_path, csv_file_trai
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.99)
     # print('LR: ', scheduler.get_last_lr()[0])
     for epoch in range(params["epochs"]):
-      loss, acc, ypred_train, yreal_train = train_single_epoch(model, train_loader, optimizer, device, criterion)
+      loss, acc, ypred_train, yreal_train = train_single_epoch_video(model, train_loader, optimizer, device, criterion)
       wandb.log({"train epoch": epoch, "train loss": loss, "train acc:": acc, "current_lr:": scheduler.get_last_lr()[0]})
       scheduler.step()
       print(f"Train Epoch {epoch} loss={loss:.2f} acc={acc:.2f} current_lr={scheduler.get_last_lr()[0]:.6f}")
-      loss, acc, ypred_test, yreal_test = eval_single_epoch(model, val_loader, device, criterion)
+      loss, acc, ypred_test, yreal_test = eval_single_epoch_video(model, val_loader, device, criterion)
       wandb.log({"Eval epoch": epoch, "Eval loss": loss, "Eval acc:": acc})
       print(f"Eval Epoch {epoch} loss={loss:.2f} acc={acc:.2f}")
   

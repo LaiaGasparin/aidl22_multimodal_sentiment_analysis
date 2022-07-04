@@ -1,5 +1,5 @@
 # MULTIMODAL SENTIMENT ANALYSIS
-Final project for the 2022 Postgraduate course on Artificial Intelligence with Deep Learning, UPC School, authored by **Alex Romero Honrubia**, **Alexandra Abós Ortega**, **Oriol Algaba Birba ** and **Laia Gasparin Pedraza**. 
+Final project for the 2022 Postgraduate course on Artificial Intelligence with Deep Learning, UPC School, authored by **Alex Romero Honrubia**, **Alexandra Abós Ortega**, **Oriol Algaba Birba** and **Laia Gasparin Pedraza**. 
 
 Advised by **Gerard **.
 
@@ -13,7 +13,7 @@ Table of Contents
 	 * [Audio](#i3d)
 	 * [Multimodal](#multimodal-network)
   * [HOW TO TRAIN THE MODEL](#how-to-train-the-model)
-  * [Setting the environment in Google Drive](#setting-the-environment-in-google-drive)
+  * [Setting the environment](#setting-the-environment)
   * [Running training scripts](#running-training-scripts)
   * [HOW TO RUN THE PROGRAM - video_processor](#how-to-run-the-program---video_processor)
   * [Installation](#installation)
@@ -36,5 +36,12 @@ Table of Contents
 ### Audio
 ### Miltimodal
 ## How to Train the Model
+
+## Settting the environment
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
 
 

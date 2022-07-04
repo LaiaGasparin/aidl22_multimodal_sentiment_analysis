@@ -131,3 +131,5 @@ dmypy.json
 
 #dataset videos
 data/*.mp4
+
+wandb/
