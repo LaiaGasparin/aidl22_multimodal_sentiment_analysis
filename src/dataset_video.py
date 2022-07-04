@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 import torch
+import os
 import pandas as pd
 from torchvision.io import read_video
 
@@ -18,12 +19,15 @@ class MyVideo(Dataset):
       if torch.is_tensor(idx):
             idx = idx.tolist()
 
-      vid_name = self.vid_files.iloc[idx, 1] 
+      vid_name = os.path.join(self.root_dir, self.vid_files.iloc[idx, 1])
       # print('Nom video: ', vid_name)
       emotion = self.vid_files.iloc[idx, 0]
       # print('Nom emoció: ', emotion)
-      
-      num_emo = self.EMOTION_MAPPING[emotion]
+
+      MAPPING = {"neutral": 0, "calm": 1, "happy": 2, "sad": 3, "angry": 4, "fearful": 5, "disgust": 6, "surprised": 7}
+
+      num_emo = MAPPING[emotion]
+      # print('Nom emoció: ', num_emo)
       frames, audio, metadata = read_video(str(vid_name)) # (N, H, W, C)
       frames = frames.permute(0, 3, 1, 2)  # (N, H, W, C) -> (N, C, H, W) / N: numero de frames, C: numero de channels
 

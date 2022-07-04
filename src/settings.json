@@ -16,8 +16,8 @@
         "data_folder_id" : "1Pq1tWAaCw4vV2nfyEaZ6imUgC6T_3KPn",
         "ruta_AIDL_dataloader" : "/content/drive/MyDrive/AIDL-Projecte/02-Codes&Tools/AIDL_dataloader",
         "batch_size": 3,
-        "shuffle": true,
-        "num_workers": 2,
+        "shuffle": false,
+        "num_workers": 1,
         "max_epochs" : 100,
         "epochs": 50,
         "lr": 1e-3,
@@ -37,6 +37,6 @@
     },
     "wandb":{
         "project_name" : "multimodal_sentiment_analysis",
-        "entity" : "alexabos"
+        "entity" : "urimuri"
     }
 }

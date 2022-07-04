@@ -23,17 +23,18 @@ class PositionalEncoding(nn.Module):
         """
         x = x + self.pe[:x.size(0)]
         return self.dropout(x)
-    
+
+
 class MyNet(nn.Module):
-    def __init__(self, device, num_classes, d_model, nhead,
-                 channels, height, weight, 
+    def __init__(self, num_classes, d_model, nhead,
+                 channels, height, weight,
                  useTrans,
-                 dim_feedforward=2048
+                 dim_feedforward=2048,
                  ):
         super().__init__()
 
         pretrained_model = models.resnet18(pretrained=True)
-        pretrained_model.to(device)
+
 
         # Features extractor: CNN part of resnet18 - 8 first children
         features_resnet18 = nn.Sequential(*(list(pretrained_model.children())[0:8]))
@@ -43,50 +44,51 @@ class MyNet(nn.Module):
         for param in features_resnet18.parameters():
             ct += 1
             if ct < 9:
-              param.requires_grad = False
+                param.requires_grad = False
 
         self.features = features_resnet18
-        self.proj = nn.Linear(int(512*(math.ceil((height/(2*2*2*2*2))))*(math.ceil((weight/(2*2*2*2*2))))), d_model)
+        self.proj = nn.Linear(
+            int(512 * (math.ceil((height / (2 * 2 * 2 * 2 * 2)))) * (math.ceil((weight / (2 * 2 * 2 * 2 * 2))))),
+            d_model)
         self.pe = PositionalEncoding(d_model, max_len=500)
         self.transformer = nn.TransformerEncoder(
-            nn.TransformerEncoderLayer(d_model, nhead, dim_feedforward), 
+            nn.TransformerEncoderLayer(d_model, nhead, dim_feedforward),
             num_layers=3
-
         )
         self.classifier = nn.Linear(d_model, num_classes)
         self.log_softmax = nn.LogSoftmax(-1)
 
     def forward(self, x, useTrans, src_key_padding_mask):
-        #print('Començant fw model: ')
+        # print('Començant fw model: ')
         x = x.to(torch.float32)
-        #print("Shape x principi",x.shape)
+        # print("Shape x principi",x.shape)
         bsz, frames, ch, w, h = x.shape
-        x = x.view(bsz*frames, ch, w, h)  
-        #print("Shape x abans pretrained: ", x.shape)
+        x = x.view(bsz * frames, ch, w, h)
+        # print("Shape x abans pretrained: ", x.shape)
         x = self.features(x)
-        #print("Shape x despres pretrained: ", x.shape)
-        
+        # print("Shape x despres pretrained: ", x.shape)
+
         _, ch, w, h = x.shape
-        x = x.view(bsz, frames, ch, w, h) 
-        #print("Shape x: ", x.shape) 
-        x = x.view(bsz, frames, ch*w*h)
-        #print("Shape abans Linear", x.shape)
-        x = self.proj(x) # per convertir a la dimensio de l'embedding
-        
-        if(useTrans):
-            x = x.transpose(1, 0) # el transformer espera les dimensions (T, B, C)
+        x = x.view(bsz, frames, ch, w, h)
+        # print("Shape x: ", x.shape)
+        x = x.view(bsz, frames, ch * w * h)
+        # print("Shape abans Linear", x.shape)
+        x = self.proj(x)  # per convertir a la dimensio de l'embedding
+
+        if (useTrans):
+            x = x.transpose(1, 0)  # el transformer espera les dimensions (T, B, C)
             x = self.pe(x)
             x = self.transformer(x, src_key_padding_mask=src_key_padding_mask)
             x = x.mean(0)
-        
-        if(useTrans == False):
-            #print('1: ', x.shape)
+
+        if (useTrans == False):
+            # print('1: ', x.shape)
             x = x.mean(1)
-            #bsz, w, h = x.shape
-            #x = x.view(bsz*w, h)
-            #print('2: ', x.shape)
+            # bsz, w, h = x.shape
+            # x = x.view(bsz*w, h)
+            # print('2: ', x.shape)
         # print('2: ', x.shape)
-        
+
         x = self.classifier(x)
         x = self.log_softmax(x)
         return x
