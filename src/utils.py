@@ -1,7 +1,6 @@
 import torch
 import torchvision.transforms.functional as F
 import matplotlib.pyplot as plt
-from torchaudio import transforms as T
 
 def confusion_matrix(preds, labels, batch_size, n_classes):
 
@@ -50,36 +49,3 @@ def accuracy(labels, outputs):
     preds = outputs.argmax(-1)
     acc = (preds == labels.view_as(preds)).float().detach().cpu().numpy().mean()
     return acc
-
-
-def plot_spectrogram(spec, title=None, ylabel='freq_bin', aspect='auto', xmax=None):
-    fig, axs = plt.subplots(1, 1)
-    axs.set_title(title or 'Spectrogram (db)')
-    axs.set_ylabel(ylabel)
-    axs.set_xlabel('frame')
-    # im = axs.imshow(librosa.power_to_db(spec), origin='lower', aspect=aspect)
-    im = axs.imshow(spec, origin='lower', aspect=aspect)
-    if xmax:
-        axs.set_xlim((0, xmax))
-    fig.colorbar(im, ax=axs)
-    plt.show(block=False)
-
-def transform_toMelSpec_db(waveform_frame, audio_params):
-    
-    spectrogram = T.MelSpectrogram(sample_rate = audio_params['sample_rate'], n_fft = audio_params['n_fft'],
-                                 hop_length = audio_params['hop_length'], n_mels = audio_params['n_mels']) #, normalized=True)
-    melspectogram_db_transform = T.AmplitudeToDB(stype= "power", top_db = 80)
-
-    melspec = spectrogram(waveform_frame)
-    melspec_db = melspectogram_db_transform(melspec)
-  
-    #place normalization
-    melspec_db = (melspec_db - melspec_db.mean())/melspec_db.std()
-    return torch.FloatTensor(melspec_db)
-
-def transform_to_16khz(waveform_frame,sample_rate, resample_rate):
-    resampler = T.Resample(sample_rate, resample_rate, dtype=torch.float32)
-    waveform = resampler(waveform_frame)
-
-    waveform = (waveform - waveform.mean())/waveform.std() #Normalized
-    return torch.FloatTensor(waveform)
