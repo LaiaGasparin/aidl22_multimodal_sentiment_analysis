@@ -94,9 +94,9 @@ def train_model(params, trans_conf, emotion_mapping, video_path, csv_file_train,
 
     criterion = nn.functional.nll_loss
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+    NAME = params["mode"]+"_EPOCHS_"+str(params["epochs"])+"_BATCH_"+str(params["batch_size"])
     # tell wandb to get started
-    with wandb.init(project=PROJECT_NAME, config=params, entity=ENTITY):
+    with wandb.init(project=PROJECT_NAME, config=params, entity=ENTITY, name=NAME):
         # access all HPs through wandb.config, so logging matches execution!
         config = wandb.config
 
