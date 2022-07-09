@@ -63,7 +63,7 @@ class MyNet(nn.Module):
         self.transformer_aud = AutoModelForPreTraining.from_pretrained("facebook/wav2vec2-base")
         ct = 0
         for param in self.transformer_aud.parameters():
-            if ct == 171 or ct == 185:
+            if ct < 179 or ct > 210:
                 param.requires_grad = False
             ct += 1
 
