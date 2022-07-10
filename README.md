@@ -42,21 +42,48 @@ Each video of our interest,  has the following metadata:
    {'filename': '01-01-03-02-02-02-06.mp4', 'modality': '01', 'emotion': '03', 'em_intensity': '02', 'statement': '02'}
 ```
 The filename can directly be used to extract the data labels by parsing the third index. 
-## ARCHITECTURE AND RESULTS
-Our solution categorizes emotions based on speech and video. Each modality is process independently and the outputs are connected to get the emotion category. 
-![alt text](Multimodal-Emotion-Models.png)
 
-In the following sections we will go through each of it:
-### Video Model
+As the goal of the project is to detect basic emotions, we reduced the number of classes. Dataset is annotated with: neutral, calm, happy, sad, angry, fearful, surprise, and disgust. Our classifier only aggregates them in the following emotions: sad, happy, disgust and angry. This decision was made after not getting good results with the video model. There are emotions that were easily interchanged such as happy and surprised.  
+
 The video files are read to extract the video and audio frames. The dimension of the video frames are: C, H, W = 3, 720, 1280. All video frames are stacked in one tensor in the Dataset class and retrieved as a batch of images. This allows the model to treat it as a sequence of images with Conv2D. 
 
 Video frames are preprocessed. As the images only consider the bust and are always in the same position, we do a Center Crop to remove the white space and then resize the outcome. Afterwards, for the Dataloader, we've implemented a collate function to ensure the length of the video sequence is always the same by adding padding. This collate function also returns the mask so that the transformer Attention can discard those.
 
+![alt text](report_img/Dataset.png)
+## ARCHITECTURE AND RESULTS
+Our solution categorizes emotions based on audio and video. Each modality goes through its own unimodal-branch and the outputs are connected to get the emotion category out of a Classification layer. 
+Our development approach was. First starting with the audio and video independently to achieve as unimodal. 
 
-### Audio
+![alt text](report_img/Video-Audio_Unimodel-HL.png)
+
+When the model was fine tuned and it worked with an acceptable performance, we work on combining both models. 
+
+![alt text](report_img/Video-Audio_Multimodel-HL.png)
+
+In the following sections we will go through each of it.
+### Video Model
+The model to extract the features from the video frames is a combination of:
+ * ResNet-18: A sequence of the first 9 Convolutional Neural Network Layers of the pretrained ResNet-18. Only the first 9 layers were used to get the low-level features. 
+ * Positional Encoder: As a previous step for the Transfomer to know the frames order. 
+ * Transformer Encoder: 3 Encoder Layers. Each Encoder layer with 3 layers and two-head attention block. 
+ * Mean normalization: Before going into the classifier, the representation of the video frames are normalized with mean 1. 
+ * Fully Connected Layer: the Linear layer as a Classifier.
+ * Softmax: to get the output in probabilies of each emotion class.
 
 
-### Multimodal
+![alt text](report_img/Video_Unimodel-LL.png)
+
+
+### Audio Model
+The model to extract the features from the audio is a combination of:
+ * Wav2Vec: A pretrained model 
+
+
+![alt text](report_img/Video_Unimodel-LL.png)
+
+### Multimodal - Audio-Visual Emotion Classifier 
+
+![alt text](report_img/Video-Audio_Multimodel-LL.png)
 ## How to Train the Model
 
 ## Settting the environment
