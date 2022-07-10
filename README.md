@@ -9,22 +9,20 @@ Table of Contents
   * [INTRODUCTION AND MOTIVATION](#introduction-and-motivation)
   * [DATASET](#dataset)
   * [ARCHITECTURE AND RESULTS](#architecture-and-results)
-	 * [Video](#video-arch)
-	 * [Audio](#i3d)
-	 * [Multimodal](#multimodal-network)
+	 * [Video Model](#video-model)
+	 * [Audio](#audio-model)
+	 * [Multimodal](#Multimodal---Audio---Visual-Emotion-Classifier )
   * [HOW TO TRAIN THE MODEL](#how-to-train-the-model)
-  * [Setting the environment](#setting-the-environment)
-  * [Running training scripts](#running-training-scripts)
-  * [HOW TO RUN THE PROGRAM - video_processor](#how-to-run-the-program---video_processor)
-  * [Installation](#installation)
-	 * [Install Docker](#install-docker)
-	 * [Install docker-compose](#install-docker-compose)
-	 * [Create your .env file](#create-your-env-file)
-	 *
-  * [HOW TO RUN THE PROGRAMvideo_capture](#how-to-run-the-program)
----
----
+   * [Development setup](#development-setup)
+   * [Settting up Google Cloud](#Settting-up-Google-Cloud)
+  * [RESULTS](#results)
+   * [Results - Video Model](results---video-model)
+   * [Results - Video Model](results---audio-model)
+   * [Results - Video Model](results---multimodal-model)
+  * [CONCLUSIONS](#conclusions)
 
+---
+---
 ## INTRODUCTION AND MOTIVATION
 Video conferencing is experimenting a huge growth since the pandemic accross all industries. Video conferencing is now involving extra features as it is becoming the new working environment as well as new channel to consume professional services. A key point of the communication is the sentiment associated with the message. 
 
@@ -63,34 +61,46 @@ When the model was fine tuned and it worked with an acceptable performance, we w
 In the following sections we will go through each of it.
 ### Video Model
 The model to extract the features from the video frames is a combination of:
- * ResNet-18: A sequence of the first 9 Convolutional Neural Network Layers of the pretrained ResNet-18. Only the first 9 layers were used to get the low-level features. 
+ * [ResNet-18](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf): A sequence of the first 9 Convolutional Neural Network Layers of the pretrained ResNet-18. Only the first 9 layers were used to get the low-level features. 
  * Positional Encoder: As a previous step for the Transfomer to know the frames order. 
  * Transformer Encoder: 3 Encoder Layers. Each Encoder layer with 3 layers and two-head attention block. 
  * Mean normalization: Before going into the classifier, the representation of the video frames are normalized with mean 1. 
  * Fully Connected Layer: the Linear layer as a Classifier.
  * Softmax: to get the output in probabilies of each emotion class.
 
-
 ![alt text](report_img/Video_Unimodel-LL.png)
-
 
 ### Audio Model
 The model to extract the features from the audio is a combination of:
- * Wav2Vec: A pretrained model 
+ * [Wav2Vec](https://ai.facebook.com/blog/wav2vec-state-of-the-art-speech-recognition-through-self-supervision/): A pretrained speech encoder model released by Facebook AI in 2019 based on self-supervised learning. It takes raw audio as input and computes a general representation. 
+ * Mean normalization: Before going into the classifier, the representation of the audio frames are normalized with mean 0. 
+ * Fully Connected Layer: the Linear layer as a Classifier.
+ * Softmax: to get the output in probabilies of each emotion class.
 
-
-![alt text](report_img/Video_Unimodel-LL.png)
+![alt text](report_img/Audio_Unimodel-LL.png)
 
 ### Multimodal - Audio-Visual Emotion Classifier 
-
+Each unimodal model, without the Classifier Fully Connected Layer, is taken as a branch for the multimodal Model. Each audio and video representation is concatenated. The concatenation is the input for the Multimodal Classifier.
 ![alt text](report_img/Video-Audio_Multimodel-LL.png)
-## How to Train the Model
+## HOW TO TRAIN THE MODEL
+### Development setup
+To set the development environment use the command make venv. This will create the virtual environment and install all the requirements. 
+To execute enter: make run
+Configuration parameters are set in settings.json and main.py. As a next step, that should be refactored and entered as an argument keyword. 
+### Settting up Google Cloud
+For running the model with more computational resources, we moved it to Google Cloud infrastructure. We've run it in a Virtual Machine with the following setup:
+OS: Debian GNU/Linux 10 
+Image: pytorch-1-11-cu113-v20220316-debian-10
+Driver: nvidia-UVM
+GPU: 1 x NVIDIA Tesla V100
+## RESULTS
+### Results - Video Model
 
-## Settting the environment
+### Results - Audio Model
 
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+### Results - Multimodal Model
 
-
-
+## CONCLUSIONS
+## References
+<a id="1">[1]</a> 
+K. He, X. Zhang, S. Ren and J. Sun, “Deep Residual Learning for Image Recognition,” in CVPR, 2016.
