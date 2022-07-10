@@ -56,6 +56,7 @@ if __name__ == "__main__":
 
     PROJECT_NAME = "multimodal_sentiment_analysis"
     ENTITY = "aidl22_project"
+    model_name = params["mode"]+"_EPOCHS_"+str(params["epochs"])+"_BATCH_"+str(params["batch_size"])+".pth"
 
     if params['win_mac'] == 'win':
         os.chdir("../")
@@ -88,3 +89,6 @@ if __name__ == "__main__":
                                                                              mode=params['mode'])
 
     print('3. End... Elapsed time: ', time.time()-start)
+
+    print('4. Saving model... ')
+    torch.save(my_model.state_dict(), os.path.join(dir, model_name))
