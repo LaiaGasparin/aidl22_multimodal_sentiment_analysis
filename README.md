@@ -54,9 +54,9 @@ Video frames are preprocessed. As the images only consider the bust and are alwa
 Our solution categorizes emotions based on audio and video. Each modality goes through its own unimodal-branch and the outputs are connected to get the emotion category out of a Classification layer. 
 Our development approach was. First starting with the audio and video independently to achieve as unimodal. 
 
-![alt text](report_img/Video-Audio_Unimodel-HL.png)
+![alt text](report_img/Video-Audio_Unimodel-HL.png | width=150 align="center")
 
-When the model was fine tuned and it worked with an acceptable performance, we work on combining both models. 
+When the model was fine tuned and it worked with an acceptable performance, we worked on combining both models. 
 
 ![alt text](report_img/Video-Audio_Multimodel-HL.png)
 
