@@ -106,6 +106,8 @@ Several approaches were considered for video:
 
 #### First iteration
 
+![alt text](report_img/video1.png)
+
 After first iteration model did not converge. For next iteration we considered:
     - Use of a pre-trained model.
     - More epochs. Initially run in Google Colab which at some point would suspend the session.
@@ -115,6 +117,8 @@ After first iteration model did not converge. For next iteration we considered:
     - Monitor loss evolution through W&B tool.
 
 #### Second and Third iteration
+
+![alt text](report_img/video2.png)
 
 - Pretrained ResNet18 model yields to a good initial starting benchmark.
 - “Fearful” is wrongly classifed as “Surprised”
@@ -127,6 +131,9 @@ After first iteration model did not converge. For next iteration we considered:
 ![alt text](report_img/video_2nd_3rd_iter_conf.jpeg)
 
 #### Fourth and Fifth iteration
+
+![alt text](report_img/video4_5.png)
+
 - Activating children nodes does not improve performance overall.
 - In 4th iteration, the model is mainly classifying as “Disgust” & “Surprised” all emotions.
 - In 5th iteration, the model is mainly classifying as “Happy” all emotions.
@@ -148,6 +155,10 @@ Considering the previous results on video and audio architectures, two final mul
 - Second iteration:
 	Video: ResNet18 (Frozen) + Linear
 	Audio: Wav2Vec (last 2 Transformers active)
+	
+![alt text](report_img/all1.png)
+
+![alt text](report_img/all2.png)
 
 - Overall performance of the Multimodal Approach is really good.
 - “Calm” emotion is wrongly classified as “Neutral”.
