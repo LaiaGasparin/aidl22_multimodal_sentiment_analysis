@@ -84,9 +84,12 @@ Each unimodal model, without the Classifier Fully Connected Layer, is taken as a
 ![alt text](report_img/Video-Audio_Multimodel-LL.png)
 ## HOW TO TRAIN THE MODEL
 ### Development setup
-To set the development environment use the command make venv. This will create the virtual environment and install all the requirements. 
-To execute enter: make run
-Configuration parameters are set in settings.json and main.py. As a next step, that should be refactored and entered as an argument keyword. 
+To set the development environment use the command make venv. This will create the virtual environment and install all the requirements. Also mp4 data needs to be imported into the virtual machine (the dataset is too big to be stored in github). 
+
+To execute: 
+- Make sure desired configurations are set in main.py. 
+- Run in the terminal: python src/main.py 
+
 ### Settting up Google Cloud
 For running the model with more computational resources, we moved it to Google Cloud infrastructure. We've run it in a Virtual Machine with the following setup:
 OS: Debian GNU/Linux 10 
