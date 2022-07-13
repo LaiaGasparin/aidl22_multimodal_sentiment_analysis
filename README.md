@@ -128,7 +128,7 @@ After first iteration model did not converge. For next iteration we considered:
 - “Disgust” is the class with highest rate of TP.
 - “Fearful” is wrongly classifed as “Surprised”.
 - “Surprised” is predicted regularly misclassifying other emotion. High FP rate.
-- - Pretrained ResNet18 model yields to a good initial starting benchmark.
+- Pretrained ResNet18 model yields to a good initial starting benchmark.
 - Adding the transformer does not yield to better results a priori.
 
 ![alt text](report_img/video_2nd_3rd_iter_curves.png)
