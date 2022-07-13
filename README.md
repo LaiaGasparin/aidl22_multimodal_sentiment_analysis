@@ -122,12 +122,20 @@ After first iteration model did not converge. For next iteration we considered:
 - “Disgust” is the class with highest rate of TP.
 - “Surprised” is predicted regularly misclassifying other emotion. High FP rate
 
+![alt text](report_img/video_2nd_3rd_iter_curves.png)
+
+![alt text](report_img/video_2nd_3rd_iter_conf.jpeg)
+
 #### Fourth and Fifth iteration
 - Activating children nodes does not improve performance overall.
 - In 4th iteration, the model is mainly classifying as “Disgust” & “Surprised” all emotions.
 - In 5th iteration, the model is mainly classifying as “Happy” all emotions.
 - Adding the transformer did not lead to performance improvement.
 - Testing of a more ambitious configuration (warm up scheduler + inverse square root + more parameters to test)  was not possible due to lack of computational power and time.
+
+![alt text](report_img/video_3rd_4rt_5th_iter_curves.png)
+
+![alt text](report_img/video_4rt_5th_iter_conf.jpeg)
 
 ### Results - Audio Model
 
@@ -146,6 +154,10 @@ Considering the previous results on video and audio architectures, two final mul
 - “Angry” emotion is always correctly classified.
 - Performance improved when not including the transformer.
 
+![alt text](report_img/all_good_curves.jpeg)
+
+![alt text](report_img/all_good_conf.jpeg)
+
 - The overoptimistic results make us suspect about an underlying issue in the model or the data structure.
 - We suspect eh Repetition variable might bias the current results so we decide to run 2 final additional run stratifying even more the dataset.
 
@@ -154,6 +166,9 @@ Considering the previous results on video and audio architectures, two final mul
 - While the model seems to learn from the train set, it is not able to generalize to validation set.
 - More ambitious architecture configuration should be further explored.
 
+![alt text](report_img/all_new_part_curves.png)
+
+![alt text](report_img/all_new_part_conf.jpeg)
 
 ## CONCLUSIONS
 
