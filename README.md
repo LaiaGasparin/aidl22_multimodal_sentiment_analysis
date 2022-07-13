@@ -16,9 +16,9 @@ Table of Contents
    * [Development setup](#development-setup)
    * [Settting up Google Cloud](#Settting-up-Google-Cloud)
   * [RESULTS](#results)
-	 * [Results - Video Model](#results---video-model)
-   * [Results - Video Model](#results---audio-model)
-   * [Results - Video Model](#results---multimodal-model)
+	* [Results - Video Model](#results---video-model)
+   	* [Results - Video Model](#results---audio-model)
+   	* [Results - Video Model](#results---multimodal-model)
   * [CONCLUSIONS](#conclusions)
 
 ---
