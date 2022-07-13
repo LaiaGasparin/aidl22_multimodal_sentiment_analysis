@@ -120,6 +120,8 @@ After first iteration model did not converge. For next iteration we considered:
 
 ![alt text](report_img/video2.png)
 
+![alt text](report_img/video3.png)
+
 - Pretrained ResNet18 model yields to a good initial starting benchmark.
 - “Fearful” is wrongly classifed as “Surprised”
 - Adding the transformer does not yield to better results a priori
