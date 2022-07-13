@@ -112,12 +112,12 @@ Several approaches were considered for video:
 ![alt text](report_img/video1.png)
 
 After first iteration model did not converge. For next iteration we considered:
-    - Use of a pre-trained model.
-    - More epochs. Initially run in Google Colab which at some point would suspend the session.
-    - Scheduler for the Learning Rate.
-    - More data. Lack of storing space which was later resolved.
-    - Use Confusion matrix to evaluate model performance. Initially only accuracy used
-    - Monitor loss evolution through W&B tool.
+- Use of a pre-trained model.
+- More epochs. Initially run in Google Colab which at some point would suspend the session.
+- Scheduler for the Learning Rate.
+- More data. Lack of storing space which was later resolved.
+- Use Confusion matrix to evaluate model performance. Initially only accuracy used
+- Monitor loss evolution through W&B tool.
 
 #### Second and Third iteration
 
