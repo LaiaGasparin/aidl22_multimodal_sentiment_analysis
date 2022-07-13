@@ -96,11 +96,75 @@ GPU: 1 x NVIDIA Tesla V100
 ## RESULTS
 ### Results - Video Model
 
+Several approaches were considered for video: 
+
+1. First iteration: Model from scratch: CNNs + Transformer + Linear
+2. Second iteration: ResNet18 (Frozen) + Average + Linear
+3. Third iteration: ResNet18 (Frozen) + Transformer + Linear
+4. Fourth iteration: ResNet18 (Last 2 children nodes trained) + Transformer + Linear
+5. Fifth iteration: ResNet18 (All children nodes trained) + Transformer + Linear
+
+#### First iteration
+
+After first iteration model did not converge. For next iteration we considered:
+    - Use of a pre-trained model.
+    - More epochs. Initially run in Google Colab which at some point would suspend the session.
+    - Scheduler for the Learning Rate.
+    - More data. Lack of storing space which was later resolved.
+    - Use Confusion matrix to evaluate model performance. Initially only accuracy used
+    - Monitor loss evolution through W&B tool.
+
+#### Second and Third iteration
+
+- Pretrained ResNet18 model yields to a good initial starting benchmark.
+- “Fearful” is wrongly classifed as “Surprised”
+- Adding the transformer does not yield to better results a priori
+- “Disgust” is the class with highest rate of TP.
+- “Surprised” is predicted regularly misclassifying other emotion. High FP rate
+
+#### Fourth and Fifth iteration
+- Activating children nodes does not improve performance overall.
+- In 4th iteration, the model is mainly classifying as “Disgust” & “Surprised” all emotions.
+- In 5th iteration, the model is mainly classifying as “Happy” all emotions.
+- Adding the transformer did not lead to performance improvement.
+- Testing of a more ambitious configuration (warm up scheduler + inverse square root + more parameters to test)  was not possible due to lack of computational power and time.
+
 ### Results - Audio Model
 
 ### Results - Multimodal Model
+Considering the previous results on video and audio architectures, two final multimodal approaches were selected: 
+- First iteration: 
+	Video: ResNet18 (Frozen) + Transformer + Linear
+	Audio: Wav2Vec (last 2 Transformers active)
+
+- Second iteration:
+	Video: ResNet18 (Frozen) + Linear
+	Audio: Wav2Vec (last 2 Transformers active)
+
+- Overall performance of the Multimodal Approach is really good.
+- “Calm” emotion is wrongly classified as “Neutral”.
+- “Angry” emotion is always correctly classified.
+- Performance improved when not including the transformer.
+
+- The overoptimistic results make us suspect about an underlying issue in the model or the data structure.
+- We suspect eh Repetition variable might bias the current results so we decide to run 2 final additional run stratifying even more the dataset.
+
+#### New data partition
+- Data partition has a relevant impact into the model performance.
+- While the model seems to learn from the train set, it is not able to generalize to validation set.
+- More ambitious architecture configuration should be further explored.
+
 
 ## CONCLUSIONS
+
+- Video and Audio models works independently. 
+- Multimodal model improves overall performance by combining relevant information from both approaches. 
+- A more ambitious architecture for the Transformer should be further addressed
+- Audio performance is good but it could be further improved with additional fine-tuning 
+- Poor performance of the transformer in video architecture might be due to complexity and data/infrastructure limitations. 
+- Data partition is a key element and it should be further investigate. 
+
+
 ## References
 <a id="1">[1]</a> 
 K. He, X. Zhang, S. Ren and J. Sun, “Deep Residual Learning for Image Recognition,” in CVPR, 2016.
