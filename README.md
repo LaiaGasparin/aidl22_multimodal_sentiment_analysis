@@ -113,8 +113,8 @@ Several approaches were considered for video:
 
 After first iteration model did not converge. For next iteration we considered:
 - Use of a pre-trained model.
-- More epochs. Initially run in Google Colab which at some point would suspend the session.
 - Scheduler for the Learning Rate.
+- More epochs. Initially run in Google Colab which at some point would suspend the session.
 - More data. Lack of storing space which was later resolved.
 - Use Confusion matrix to evaluate model performance. Initially only accuracy used
 - Monitor loss evolution through W&B tool.
@@ -125,11 +125,11 @@ After first iteration model did not converge. For next iteration we considered:
 
 ![alt text](report_img/video3.png)
 
-- Pretrained ResNet18 model yields to a good initial starting benchmark.
-- “Fearful” is wrongly classifed as “Surprised”
-- Adding the transformer does not yield to better results a priori
 - “Disgust” is the class with highest rate of TP.
-- “Surprised” is predicted regularly misclassifying other emotion. High FP rate
+- “Fearful” is wrongly classifed as “Surprised”.
+- “Surprised” is predicted regularly misclassifying other emotion. High FP rate.
+- - Pretrained ResNet18 model yields to a good initial starting benchmark.
+- Adding the transformer does not yield to better results a priori.
 
 ![alt text](report_img/video_2nd_3rd_iter_curves.png)
 
@@ -139,10 +139,9 @@ After first iteration model did not converge. For next iteration we considered:
 
 ![alt text](report_img/video4_5.png)
 
-- Activating children nodes does not improve performance overall.
 - In 4th iteration, the model is mainly classifying as “Disgust” & “Surprised” all emotions.
 - In 5th iteration, the model is mainly classifying as “Happy” all emotions.
-- Adding the transformer did not lead to performance improvement.
+- Activating children nodes does not improve performance overall.
 - Testing of a more ambitious configuration (warm up scheduler + inverse square root + more parameters to test)  was not possible due to lack of computational power and time.
 
 ![alt text](report_img/video_3rd_4rt_5th_iter_curves.png)
@@ -165,10 +164,10 @@ Considering the previous results on video and audio architectures, two final mul
 
 ![alt text](report_img/all2.png)
 
-- Overall performance of the Multimodal Approach is really good.
+- Overall performance of the Multimodal Approach is really good in validation but worse in test.
 - “Calm” emotion is wrongly classified as “Neutral”.
 - “Angry” emotion is always correctly classified.
-- Performance improved when not including the transformer.
+
 
 ![alt text](report_img/all_good_curves.jpeg)
 
@@ -188,12 +187,13 @@ Considering the previous results on video and audio architectures, two final mul
 
 ## CONCLUSIONS
 
-- Video and Audio models works independently. 
+- Video and Audio models work independently. 
 - Multimodal model improves overall performance by combining relevant information from both approaches. 
-- A more ambitious architecture for the Transformer should be further addressed
-- Audio performance is good but it could be further improved with additional fine-tuning 
-- Poor performance of the transformer in video architecture might be due to complexity and data/infrastructure limitations. 
-- Data partition is a key element and it should be further investigate. 
+- A more ambitious architecture for the Transformer should be further addressed.
+- Poor performance of the transformer architecture might be due to complexity and data/infrastructure limitations. 
+- Audio performance is good but it could be further improved with additional fine-tuning.
+- A new set of experiments should be done with the new data partition.
+
 
 
 ## References
